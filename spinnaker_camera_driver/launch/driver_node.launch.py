@@ -102,7 +102,26 @@ example_parameters = {
         'chunk_selector_gain': 'Gain',
         'chunk_enable_gain': True,
         'chunk_selector_timestamp': 'Timestamp',
-        'chunk_enable_timestamp': True}
+        'chunk_enable_timestamp': True},
+    'flir_ax5': {
+        'debug': False,
+        'compute_brightness': False,
+        'adjust_timestamp': False,
+        'dump_node_map': False,
+        # --- Set parameters defined in flir_ax5.yaml
+        'pixel_format': 'Mono8',
+        'gev_scps_packet_size': 576,
+        'image_width': 640,
+        'image_height': 512,
+        'offset_x': 0,
+        'offset_y': 0,
+        'sensor_gain_mode': 'HighGainMode', # "HighGainMode" "LowGainMode"
+        'nuc_mode': 'Automatic', #"Automatic" "External" "Manual"
+        'sensor_dde_mode':'Automatic', #"Automatic" "Manual"
+        'sensor_video_standard':'NTSC30HZ', #"NTSC30HZ" "PAL25Hz" "NTSC60HZ" "PAL50HZ"
+        'image_adjust_method':'PlateauHistogram', #"PlateauHistogram" "OnceBright" "AutoBright" "Manual" "Linear"
+        'video_orientation':'Normal' #"Normal" "Invert" "Revert" "InvertRevert"
+        }
     }
 
 
