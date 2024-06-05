@@ -27,7 +27,7 @@ example_parameters = {
     'blackfly_s': {
         'debug': False,
         'compute_brightness': False,
-        'adjust_timestamp': True,
+        'adjust_timestamp': False,
         'dump_node_map': False,
         # set parameters defined in blackfly_s.yaml
         'gain_auto': 'Continuous',
