@@ -45,7 +45,7 @@ example_parameters = {
         # 'binning_y': 1,
         # 'connect_while_subscribed': True,
         'frame_rate_auto': 'Off',
-        'frame_rate': 40.0,
+        'frame_rate': 30.0,
         'frame_rate_enable': True,
         'buffer_queue_size': 10,
         'trigger_mode': 'Off',
