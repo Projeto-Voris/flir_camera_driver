@@ -134,6 +134,7 @@ def launch_setup(context, *args, **kwargs):
     """Launch camera driver node."""
     parameter_file = LaunchConfig('parameter_file').perform(context)
     camera_type = LaunchConfig('camera_type').perform(context)
+    camera_info_url = LaunchConfig('camera_info_url').perform(context)
     if not parameter_file:
         parameter_file = PathJoinSubstitution(
             [FindPackageShare('spinnaker_camera_driver'), 'config', camera_type + '.yaml']
@@ -151,6 +152,7 @@ def launch_setup(context, *args, **kwargs):
             {
                 'ffmpeg_image_transport.encoding': 'hevc_nvenc',
                 'parameter_file': parameter_file,
+                'camerainfo_url': camera_info_url,
                 'serial_number': [LaunchConfig('serial')],
             },
         ],
@@ -164,8 +166,17 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
     """Create composable node by calling opaque function."""
+    serial = '19290922'
+    camera_info_url = PathJoinSubstitution([FindPackageShare('spinnaker_camera_driver'), 'config',
+                                            serial+'.yaml'])
     return LaunchDescription(
         [
+            LaunchArg(
+                'camera_info_url',
+                default_value=['file://', camera_info_url],
+                description='Full path to camera info file'
+            ),
+
             LaunchArg(
                 'camera_name',
                 default_value=['flir_camera'],
@@ -178,7 +189,7 @@ def generate_launch_description():
             ),
             LaunchArg(
                 'serial',
-                default_value="'20435008'",
+                default_value=f"'{serial}'",
                 description='FLIR serial number of camera (in quotes!!)',
             ),
             LaunchArg(
