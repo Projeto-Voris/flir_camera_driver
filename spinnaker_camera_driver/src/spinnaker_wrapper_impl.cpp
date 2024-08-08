@@ -18,6 +18,7 @@
 #include <chrono>
 #include <cmath>
 #include <iostream>
+#include <spinnaker_camera_driver/logging.hpp>
 #include <string>
 #include <vector>
 
@@ -267,6 +268,15 @@ double SpinnakerWrapperImpl::getReceiveFrameRate() const
   return (avgTimeInterval_ > 0 ? (1.0 / avgTimeInterval_) : 0);
 }
 
+double SpinnakerWrapperImpl::getIncompleteRate()
+{
+  const double r =
+    numImagesTotal_ == 0 ? 0 : (numIncompleteImagesTotal_ / static_cast<double>(numImagesTotal_));
+  numImagesTotal_ = 0;
+  numIncompleteImagesTotal_ = 0;
+  return (r);
+}
+
 static int int_ceil(size_t x, int y)
 {
   // compute the integer ceil(x / y)
@@ -309,14 +319,10 @@ void SpinnakerWrapperImpl::OnImageEvent(Spinnaker::ImagePtr imgPtr)
     std::unique_lock<std::mutex> lock(mutex_);
     lastTime_ = t;
   }
-
+  numImagesTotal_++;
   if (imgPtr->IsIncomplete()) {
     numIncompleteImages_++;
-#if 0
-    // Retrieve and print the image status description
-    std::cout << "Image incomplete: "
-              << Spinnaker::Image::GetImageStatusDescription(imgPtr->GetImageStatus()) << std::endl;
-#endif
+    numIncompleteImagesTotal_++;
   } else {
     float expTime = 0;
     float gain = 0;
@@ -371,13 +377,41 @@ bool SpinnakerWrapperImpl::initCamera(const std::string & serialNumber)
   if (camera_) {
     return false;
   }
-  for (size_t cam_idx = 0; cam_idx < cameraList_.GetSize(); cam_idx++) {
-    auto cam = cameraList_.GetByIndex(cam_idx);
-    const std::string sn = get_serial(cam);
-    if (sn == serialNumber) {
-      camera_ = cam;
-      camera_->Init();
-      break;
+  const auto interfaceList = system_->GetInterfaces();
+
+  for (size_t i = 0; i < interfaceList.GetSize(); i++) {
+    const auto iface = interfaceList.GetByIndex(i);
+    const auto & nodeMapInterface = iface->GetTLNodeMap();
+    const auto ptrInterfaceType = nodeMapInterface.GetNode("InterfaceType");
+
+    if (IsAvailable(ptrInterfaceType) && IsReadable(ptrInterfaceType)) {
+      const Spinnaker::GenApi::CStringPtr ptrInterfaceDisplayName =
+        nodeMapInterface.GetNode("InterfaceDisplayName");
+
+      if (IsAvailable(ptrInterfaceDisplayName) && IsReadable(ptrInterfaceDisplayName)) {
+        const auto interfaceDisplayName = ptrInterfaceDisplayName->GetValue();
+        const auto camList = iface->GetCameras();
+        for (size_t cam_idx = 0; cam_idx < camList.GetSize(); cam_idx++) {
+          // try open the cameras in a specific interface
+          Spinnaker::CameraPtr ptrCam = camList.GetByIndex(cam_idx);
+          const auto serial = get_serial(ptrCam);
+          if (serial == serialNumber) {
+            try {
+              ptrCam->Init();
+              LOG_INFO_FMT(
+                "Initialized camera [serial: %s] from: [%s]", serialNumber.c_str(),
+                interfaceDisplayName.c_str());
+              camera_ = ptrCam;
+              return (true);
+            } catch (Spinnaker::Exception & e) {
+              // error while open the cameras in this interface
+              ptrCam->DeInit();
+            }
+          }
+        }
+      } else {
+        LOG_ERROR("Unknown Interface (Display name not readable)");
+      }
     }
   }
   return (camera_ != 0);

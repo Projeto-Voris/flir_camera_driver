@@ -21,6 +21,7 @@
 
 #include <memory>
 #include <mutex>
+#include <rclcpp/rclcpp.hpp>
 #include <spinnaker_camera_driver/image.hpp>
 #include <spinnaker_camera_driver/spinnaker_wrapper.hpp>
 #include <string>
@@ -51,6 +52,8 @@ public:
   bool stopCamera();
 
   double getReceiveFrameRate() const;
+  double getIncompleteRate();
+
   std::string getNodeMapAsString();
   // methods for setting camera params
   std::string setEnum(const std::string & nodeName, const std::string & val, std::string * retVal);
@@ -66,6 +69,8 @@ private:
   void setPixelFormat(const std::string & pixFmt);
   bool setInINodeMap(double f, const std::string & field, double * fret);
   void monitorStatus();
+
+  rclcpp::Logger get_logger() { return rclcpp::get_logger("Spinnaker Wrapper"); }
 
   // ----- variables --
   Spinnaker::SystemPtr system_;
@@ -85,6 +90,8 @@ private:
   std::mutex mutex_;
   uint64_t acquisitionTimeout_{10000000000ULL};
   size_t numIncompleteImages_{0};
+  size_t numImagesTotal_{0};
+  size_t numIncompleteImagesTotal_{0};
 };
 }  // namespace spinnaker_camera_driver
 

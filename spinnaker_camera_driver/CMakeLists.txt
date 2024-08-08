@@ -79,7 +79,6 @@ set(ROS_DEPENDENCIES
   "image_transport"
   "flir_camera_msgs")
 
-
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros REQUIRED)
