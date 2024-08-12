@@ -54,7 +54,7 @@ camera_params = {
 }
 
 
-def make_camera_node(name, camera_type, serial):
+def make_camera_node(name, camera_type, serial, camera_info_url):
     parameter_file = PathJoinSubstitution(
         [FindPackageShare('spinnaker_camera_driver'), 'config', camera_type + '.yaml']
     )
@@ -63,7 +63,7 @@ def make_camera_node(name, camera_type, serial):
         package='spinnaker_camera_driver',
         plugin='spinnaker_camera_driver::CameraDriver',
         name=name,
-        parameters=[camera_params, {'parameter_file': parameter_file, 'serial_number': serial}],
+        parameters=[camera_params, {'parameter_file': parameter_file, 'serial_number': serial, 'camerainfo_url': camera_info_url}],
         remappings=[
             ('~/control', '/exposure_control/control'),
         ],
@@ -75,7 +75,7 @@ def make_camera_node(name, camera_type, serial):
 def launch_setup(context, *args, **kwargs):
     """Create multiple camera."""
     container = ComposableNodeContainer(
-        name='SM2_camera_container',
+        name='SM3_camera_container',
         namespace='',
         package='rclcpp_components',
         executable='component_container',
@@ -88,11 +88,13 @@ def launch_setup(context, *args, **kwargs):
                 LaunchConfig('cam_0_name'),
                 LaunchConfig('cam_0_type').perform(context),
                 LaunchConfig('cam_0_serial'),
+                LaunchConfig('cam_0_camera_info_url'),
             ),
             make_camera_node(
                 LaunchConfig('cam_1_name'),
                 LaunchConfig('cam_1_type').perform(context),
                 LaunchConfig('cam_1_serial'),
+                LaunchConfig('cam_1_camera_info_url'),
             ),
         ],
         output='screen',
@@ -102,8 +104,24 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
     """Create composable node by calling opaque function."""
+    serial_0 = '16378753'
+    serial_1 = '16378754'
+    cam_0_camera_info_url = PathJoinSubstitution([FindPackageShare('spinnaker_camera_driver'), 'config',
+                                                  serial_0+'.yaml'])
+    cam_1_camera_info_url = PathJoinSubstitution([FindPackageShare('spinnaker_camera_driver'), 'config',
+                                                  serial_1+'.yaml'])
     return LaunchDescription(
         [
+            LaunchArg(
+                'cam_0_camera_info_url',
+                default_value=['file://', cam_0_camera_info_url],
+                description='Full path to camera info file'
+            ),
+            LaunchArg(
+                'cam_1_camera_info_url',
+                default_value=['file://', cam_1_camera_info_url],
+                description='Full path to camera info file'
+            ),
             LaunchArg(
                 'cam_0_name',
                 default_value=['left'],
@@ -118,12 +136,12 @@ def generate_launch_description():
             LaunchArg('cam_1_type', default_value='blackfly_s', description='type of camera 1'),
             LaunchArg(
                 'cam_0_serial',
-                default_value="'19355648'",
+                default_value=f"'{serial_0}'",
                 description='FLIR serial number of camera 0 (in quotes!!)',
             ),
             LaunchArg(
                 'cam_1_serial',
-                default_value="'19290922'",
+                default_value=f"'{serial_1}'",
                 description='FLIR serial number of camera 1 (in quotes!!)',
             ),
             OpaqueFunction(function=launch_setup),
