@@ -63,6 +63,7 @@ def make_camera_node(name, camera_type, serial, camera_info_url):
         package='spinnaker_camera_driver',
         plugin='spinnaker_camera_driver::CameraDriver',
         name=name,
+        namespace='SM3',
         parameters=[camera_params, {'parameter_file': parameter_file, 'serial_number': serial, 'camerainfo_url': camera_info_url}],
         remappings=[
             ('~/control', '/exposure_control/control'),
@@ -76,7 +77,7 @@ def launch_setup(context, *args, **kwargs):
     """Create multiple camera."""
     container = ComposableNodeContainer(
         name='SM3_camera_container',
-        namespace='',
+        namespace='SM3',
         package='rclcpp_components',
         executable='component_container',
         composable_node_descriptions=[
@@ -104,8 +105,8 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
     """Create composable node by calling opaque function."""
-    serial_0 = '19290922'
-    serial_1 = '19355648'
+    serial_0 = '19355648'
+    serial_1 = '19290922'
     cam_0_camera_info_url = PathJoinSubstitution([FindPackageShare('spinnaker_camera_driver'), 'config',
                                             serial_0+'.yaml'])
     cam_1_camera_info_url = PathJoinSubstitution([FindPackageShare('spinnaker_camera_driver'), 'config',

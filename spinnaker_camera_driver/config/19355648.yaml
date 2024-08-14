@@ -1,15 +1,15 @@
 image_width: 4096
 image_height: 3000
-camera_name: right
+camera_name: left
 camera_matrix:
   rows: 3
   cols: 3
-  data: [8000.0, 0.0, 2048.0, 0.0, 8000.0, 1500.0, 0.0, 0.0, 1.0]
+  data: [8767.5, 0.0, 2089.1, 0.0, 8799.4, 1438.8, 0.0, 0.0, 1.0]
 distortion_model: pinhole
 distortion_coefficients:
   rows: 1
   cols: 5
-  data: [0.0, 0.0, 0.0, 0.0, 0.0]
+  data: [-0.20627, -0.44859, 2.317e-05, 0.00080137, -0.24818]
 rectification_matrix:
   rows: 3
   cols: 3
@@ -17,4 +17,4 @@ rectification_matrix:
 projection_matrix:
   rows: 3
   cols: 4
-  data: [8000.0, 0.0, 2048.0, 0.0, 0.0, 8000.0, 1500.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+  data: [8767.5, 0.0, 2089.1, 0.0, 0.0, 8799.4, 1438.8, 0.0, 0.0, 0.0, 1.0, 0.0]
