@@ -124,12 +124,12 @@ def generate_launch_description():
             ),
             LaunchArg(
                 'cam_0_name',
-                default_value=['left'],
+                default_value=['sm2_left'],
                 description='camera name (ros node name) of camera 0',
             ),
             LaunchArg(
                 'cam_1_name',
-                default_value=['right'],
+                default_value=['sm2_right'],
                 description='camera name (ros node name) of camera 1',
             ),
             LaunchArg('cam_0_type', default_value='blackfly_s', description='type of camera 0'),
