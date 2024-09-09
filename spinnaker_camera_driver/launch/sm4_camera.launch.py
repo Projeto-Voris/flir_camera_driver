@@ -28,12 +28,11 @@ camera_params = {
     'debug': False,
     'compute_brightness': True,
     'dump_node_map': False,
-    'adjust_timestamp': True,
+    'adjust_timestamp': False,
     'gain_auto': 'Off',
     'gain': 0,
     'exposure_auto': 'Off',
-    'exposure_time': 81000.0,
-    'pixel_format': 'Mono8',
+    'exposure_time': 16666.7,
     'line2_selector': 'Line2',
     'line2_v33enable': False,
     'line3_selector': 'Line3',
@@ -64,7 +63,6 @@ def make_camera_node(name, camera_type, serial, camera_info_url):
         package='spinnaker_camera_driver',
         plugin='spinnaker_camera_driver::CameraDriver',
         name=name,
-        namespace='SM3',
         parameters=[camera_params, {'parameter_file': parameter_file, 'serial_number': serial, 'camerainfo_url': camera_info_url}],
         remappings=[
             ('~/control', '/exposure_control/control'),
@@ -77,8 +75,8 @@ def make_camera_node(name, camera_type, serial, camera_info_url):
 def launch_setup(context, *args, **kwargs):
     """Create multiple camera."""
     container = ComposableNodeContainer(
-        name='SM3_camera_container',
-        namespace='SM3',
+        name='SM2_camera_container',
+        namespace='',
         package='rclcpp_components',
         executable='component_container',
         composable_node_descriptions=[
@@ -106,12 +104,12 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
     """Create composable node by calling opaque function."""
-    serial_0 = '19355648'
-    serial_1 = '19290922'
+    serial_0 = '16378750'
+    serial_1 = '16378734'
     cam_0_camera_info_url = PathJoinSubstitution([FindPackageShare('spinnaker_camera_driver'), 'config',
-                                            serial_0+'.yaml'])
+                                                  serial_0+'.yaml'])
     cam_1_camera_info_url = PathJoinSubstitution([FindPackageShare('spinnaker_camera_driver'), 'config',
-                                            serial_1+'.yaml'])
+                                                  serial_1+'.yaml'])
     return LaunchDescription(
         [
             LaunchArg(
@@ -126,12 +124,12 @@ def generate_launch_description():
             ),
             LaunchArg(
                 'cam_0_name',
-                default_value=['left'],
+                default_value=['sm4_left'],
                 description='camera name (ros node name) of camera 0',
             ),
             LaunchArg(
                 'cam_1_name',
-                default_value=['right'],
+                default_value=['sm4_right'],
                 description='camera name (ros node name) of camera 1',
             ),
             LaunchArg('cam_0_type', default_value='blackfly_s', description='type of camera 0'),
