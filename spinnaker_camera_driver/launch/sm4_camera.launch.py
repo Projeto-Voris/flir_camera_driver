@@ -32,7 +32,7 @@ camera_params = {
     'gain_auto': 'Off',
     'gain': 0,
     'exposure_auto': 'Off',
-    'exposure_time': 16666.7,
+    'exposure_time': 32000,
     'line2_selector': 'Line2',
     'line2_v33enable': False,
     'line3_selector': 'Line3',
@@ -63,6 +63,7 @@ def make_camera_node(name, camera_type, serial, camera_info_url):
         package='spinnaker_camera_driver',
         plugin='spinnaker_camera_driver::CameraDriver',
         name=name,
+        namespace='SM4',
         parameters=[camera_params, {'parameter_file': parameter_file, 'serial_number': serial, 'camerainfo_url': camera_info_url}],
         remappings=[
             ('~/control', '/exposure_control/control'),
@@ -75,8 +76,8 @@ def make_camera_node(name, camera_type, serial, camera_info_url):
 def launch_setup(context, *args, **kwargs):
     """Create multiple camera."""
     container = ComposableNodeContainer(
-        name='SM2_camera_container',
-        namespace='',
+        name='SM4_camera_container',
+        namespace='SM4',
         package='rclcpp_components',
         executable='component_container',
         composable_node_descriptions=[
@@ -124,12 +125,12 @@ def generate_launch_description():
             ),
             LaunchArg(
                 'cam_0_name',
-                default_value=['sm4_left'],
+                default_value=['left'],
                 description='camera name (ros node name) of camera 0',
             ),
             LaunchArg(
                 'cam_1_name',
-                default_value=['sm4_right'],
+                default_value=['right'],
                 description='camera name (ros node name) of camera 1',
             ),
             LaunchArg('cam_0_type', default_value='blackfly_s', description='type of camera 0'),
