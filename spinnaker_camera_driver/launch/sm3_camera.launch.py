@@ -77,7 +77,7 @@ def make_camera_node(name, camera_type, serial, camera_info_url):
 def launch_setup(context, *args, **kwargs):
     """Create multiple camera."""
     container = ComposableNodeContainer(
-        name='SM3_camera_container',
+        name='camera_container',
         namespace='SM3',
         package='rclcpp_components',
         executable='component_container',
