@@ -172,7 +172,7 @@ void Camera::printStatus()
       LOG_WARN_FMT(
         "rate [Hz] in %6.2f out %6.2f drop %3.0f%% INCOMPLETE %3.0f%%",
         wrapper_->getReceiveFrameRate(), outRate, dropRate * 100, incompleteRate * 100);
-    } else {
+    } else if (outRate > 0.01) {
       LOG_INFO_FMT(
         "rate [Hz] in %6.2f out %6.2f drop %3.0f%%", wrapper_->getReceiveFrameRate(), outRate,
         dropRate * 100);

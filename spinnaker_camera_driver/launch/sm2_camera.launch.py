@@ -32,7 +32,7 @@ camera_params = {
     'gain_auto': 'Off',
     'gain': 0,
     'exposure_auto': 'Off',
-    'exposure_time': 16666.7,
+    'exposure_time': 3000.7,
     'line2_selector': 'Line2',
     'line2_v33enable': False,
     'line3_selector': 'Line3',
@@ -76,8 +76,8 @@ def make_camera_node(name, camera_type, serial, camera_info_url):
 def launch_setup(context, *args, **kwargs):
     """Create multiple camera."""
     container = ComposableNodeContainer(
-        name='SM2_camera_container',
-        namespace='',
+        name='camera_container',
+        namespace='SM2',
         package='rclcpp_components',
         executable='component_container',
         composable_node_descriptions=[

@@ -76,7 +76,7 @@ def make_camera_node(name, camera_type, serial, camera_info_url):
 def launch_setup(context, *args, **kwargs):
     """Create multiple camera."""
     container = ComposableNodeContainer(
-        name='SM4_camera_container',
+        name='camera_container',
         namespace='SM4',
         package='rclcpp_components',
         executable='component_container',
@@ -106,7 +106,7 @@ def launch_setup(context, *args, **kwargs):
 def generate_launch_description():
     """Create composable node by calling opaque function."""
     serial_0 = '16378750'
-    serial_1 = '16378734'
+    serial_1 = '16378749'
     cam_0_camera_info_url = PathJoinSubstitution([FindPackageShare('spinnaker_camera_driver'), 'config',
                                                   serial_0+'.yaml'])
     cam_1_camera_info_url = PathJoinSubstitution([FindPackageShare('spinnaker_camera_driver'), 'config',

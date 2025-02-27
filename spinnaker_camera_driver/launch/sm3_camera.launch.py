@@ -32,16 +32,16 @@ camera_params = {
     'gain_auto': 'Off',
     'gain': 0,
     'exposure_auto': 'Off',
-    'exposure_time': 100000.0,
+    'exposure_time': 20000.0,
     'pixel_format': 'Mono8',
     'line2_selector': 'Line2',
     'line2_v33enable': False,
     'line3_selector': 'Line3',
     'line3_linemode': 'Input',
     'trigger_selector': 'FrameStart',
-    'trigger_mode': 'Off',
-    'trigger_source': 'Line3',
-    'trigger_delay': 2.0,
+    'trigger_mode': 'On',
+    'trigger_source': 'Line2',
+    'trigger_delay': 67.0,
     'trigger_overlap': 'ReadOut',
     'chunk_mode_active': True,
     'chunk_selector_frame_id': 'FrameID',
@@ -52,6 +52,8 @@ camera_params = {
     'chunk_enable_gain': True,
     'chunk_selector_timestamp': 'Timestamp',
     'chunk_enable_timestamp': True,
+    'binning_x': 2,
+    'binning_y': 2,
 }
 
 
@@ -77,7 +79,7 @@ def make_camera_node(name, camera_type, serial, camera_info_url):
 def launch_setup(context, *args, **kwargs):
     """Create multiple camera."""
     container = ComposableNodeContainer(
-        name='SM3_camera_container',
+        name='camera_container',
         namespace='SM3',
         package='rclcpp_components',
         executable='component_container',
