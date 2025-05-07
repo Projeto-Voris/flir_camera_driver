@@ -28,20 +28,21 @@ camera_params = {
     'debug': False,
     'compute_brightness': True,
     'dump_node_map': False,
-    'adjust_timestamp': True,
+    'adjust_timestamp': False,
     'gain_auto': 'Off',
     'gain': 0,
-    'exposure_auto': 'Off',
-    'exposure_time': 20000.0,
-    'pixel_format': 'Mono8',
+    'exposure_auto': 'On',
+    'exposure_time': 8000.0,
+    'frame_rate_enable': True,
+    'frame_rate': 50.0,
     'line2_selector': 'Line2',
     'line2_v33enable': False,
     'line3_selector': 'Line3',
     'line3_linemode': 'Input',
     'trigger_selector': 'FrameStart',
     'trigger_mode': 'On',
-    'trigger_source': 'Line2',
-    'trigger_delay': 67.0,
+    'trigger_source': 'Line0',
+    'trigger_delay': 2.0,
     'trigger_overlap': 'ReadOut',
     'chunk_mode_active': True,
     'chunk_selector_frame_id': 'FrameID',
@@ -52,12 +53,12 @@ camera_params = {
     'chunk_enable_gain': True,
     'chunk_selector_timestamp': 'Timestamp',
     'chunk_enable_timestamp': True,
-    'binning_x': 2,
-    'binning_y': 2,
+    'binning_x': 1,
+    'binning_y': 1,
 }
 
 
-def make_camera_node(name, camera_type, serial, camera_info_url):
+def make_camera_node(name, camera_type, serial, camera_info_url, frame_id):
     parameter_file = PathJoinSubstitution(
         [FindPackageShare('spinnaker_camera_driver'), 'config', camera_type + '.yaml']
     )
@@ -67,7 +68,7 @@ def make_camera_node(name, camera_type, serial, camera_info_url):
         plugin='spinnaker_camera_driver::CameraDriver',
         name=name,
         namespace='SM3',
-        parameters=[camera_params, {'parameter_file': parameter_file, 'serial_number': serial, 'camerainfo_url': camera_info_url}],
+        parameters=[camera_params, {'parameter_file': parameter_file, 'serial_number': serial, 'camerainfo_url': camera_info_url, 'frame_id': frame_id}],
         remappings=[
             ('~/control', '/exposure_control/control'),
         ],
@@ -93,12 +94,14 @@ def launch_setup(context, *args, **kwargs):
                 LaunchConfig('cam_0_type').perform(context),
                 LaunchConfig('cam_0_serial'),
                 LaunchConfig('cam_0_camera_info_url'),
+                rame_id='SM3/left_camera_link',
             ),
             make_camera_node(
                 LaunchConfig('cam_1_name'),
                 LaunchConfig('cam_1_type').perform(context),
                 LaunchConfig('cam_1_serial'),
                 LaunchConfig('cam_1_camera_info_url'),
+                frame_id='SM3/right_camera_link',
             ),
         ],
         output='screen',

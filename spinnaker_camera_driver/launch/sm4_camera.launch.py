@@ -32,7 +32,7 @@ camera_params = {
     'gain_auto': 'Off',
     'gain': 0,
     'exposure_auto': 'Off',
-    'exposure_time': 833,
+    'exposure_time': 16666.0,
     'line2_selector': 'Line2',
     'line2_v33enable': False,
     'line3_selector': 'Line3',
@@ -40,7 +40,7 @@ camera_params = {
     'trigger_selector': 'FrameStart',
     'trigger_mode': 'On',
     'trigger_source': 'Line0',
-    'trigger_delay': 2.0,
+    'trigger_delay': 5.0,
     'trigger_overlap': 'ReadOut',
     'chunk_mode_active': True,
     'chunk_selector_frame_id': 'FrameID',
@@ -54,7 +54,7 @@ camera_params = {
 }
 
 
-def make_camera_node(name, camera_type, serial, camera_info_url):
+def make_camera_node(name, camera_type, serial, camera_info_url, frame_id):
     parameter_file = PathJoinSubstitution(
         [FindPackageShare('spinnaker_camera_driver'), 'config', camera_type + '.yaml']
     )
@@ -64,7 +64,7 @@ def make_camera_node(name, camera_type, serial, camera_info_url):
         plugin='spinnaker_camera_driver::CameraDriver',
         name=name,
         namespace='SM4',
-        parameters=[camera_params, {'parameter_file': parameter_file, 'serial_number': serial, 'camerainfo_url': camera_info_url}],
+        parameters=[camera_params, {'parameter_file': parameter_file, 'serial_number': serial, 'camerainfo_url': camera_info_url, 'frame_id': frame_id}],
         remappings=[
             ('~/control', '/exposure_control/control'),
         ],
@@ -90,12 +90,14 @@ def launch_setup(context, *args, **kwargs):
                 LaunchConfig('cam_0_type').perform(context),
                 LaunchConfig('cam_0_serial'),
                 LaunchConfig('cam_0_camera_info_url'),
+                frame_id='SM4/left_camera_link',
             ),
             make_camera_node(
                 LaunchConfig('cam_1_name'),
                 LaunchConfig('cam_1_type').perform(context),
                 LaunchConfig('cam_1_serial'),
                 LaunchConfig('cam_1_camera_info_url'),
+                frame_id='SM4/right_camera_link',
             ),
         ],
         output='screen',
