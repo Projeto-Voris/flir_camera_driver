@@ -14,15 +14,15 @@ camera_params = {
         'compute_brightness': True,
         'dump_node_map': False,
         'adjust_timestamp': False,
-        'pixel_format': 'BayerRG8',
-        'gain_auto': 'Off',
+        'pixel_format': 'BayerRG8',  # Formato de pixel para câmeras coloridas
+        'gain_auto': 'On',                  # Modificado para automático
         'gain': 0,
-        'exposure_auto': 'Off',
-        'exposure_time': 16667,
-        'frame_rate': 60,
-        'frame_rate_enable': False,
-        'auto_exposure_lower_limit': 30,
-        'auto_exposure_upper_limit': 16668.0,
+        'exposure_auto': 'On',              # Modificado para automático
+        'exposure_time': 16667,             # Valor padrão quando automático está desligado
+        'frame_rate': 59.99,
+        'frame_rate_enable': True,
+        'auto_exposure_lower_limit': 30,    # Limite mínimo (µs)
+        'auto_exposure_upper_limit': 16797.84,  # Ajustado para valor máximo compatível
         'buffer_queue_size': 10,
         'line2_selector': 'Line2',
         'line2_v33enable': False,
@@ -31,7 +31,7 @@ camera_params = {
         'trigger_selector': 'FrameStart',
         'trigger_mode': 'Off',
         'trigger_source': 'Line3',
-        'trigger_delay': 29,
+        'trigger_delay': 29,                 # Valor original mantido para color
         'trigger_overlap': 'ReadOut',
         'chunk_mode_active': True,
         'chunk_selector_frame_id': 'FrameID',
@@ -50,12 +50,13 @@ camera_params = {
         'compute_brightness': True,
         'dump_node_map': False,
         'adjust_timestamp': False,
-        'gain_auto': 'On',
+        'gain_auto': 'On',                  # Já estava correto
         'gain': 0,
-        'exposure_auto': 'On',
-        'exposure_time': 16000,
-        'auto_exposure_lower_limit': 30,
-        'auto_exposure_upper_limit': 16797.84,
+        'exposure_auto': 'On',              # Já estava correto
+        'exposure_time': 16667,             # Valor padrão quando automático está desligado
+        'frame_rate': 59.99,
+        'auto_exposure_lower_limit': 30,     # Limite mínimo (µs)
+        'auto_exposure_upper_limit': 16797.84,  # Máximo compatível
         'line2_selector': 'Line2',
         'line2_v33enable': False,
         'line3_selector': 'Line3',
@@ -63,7 +64,7 @@ camera_params = {
         'trigger_selector': 'FrameStart',
         'trigger_mode': 'Off',
         'trigger_source': 'Line3',
-        'trigger_delay': 9,
+        'trigger_delay': 9,                  # Delay otimizado
         'trigger_overlap': 'ReadOut',
         'chunk_mode_active': True,
         'chunk_selector_frame_id': 'FrameID',
