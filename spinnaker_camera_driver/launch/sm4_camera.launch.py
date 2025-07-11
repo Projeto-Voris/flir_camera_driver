@@ -24,6 +24,7 @@ from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 from launch_ros.substitutions import FindPackageShare
 
+
 camera_params = {
     'debug': False,
     'compute_brightness': True,
@@ -38,19 +39,19 @@ camera_params = {
     'line3_selector': 'Line3',
     'line3_linemode': 'Input',
     'trigger_selector': 'FrameStart',
-    'trigger_mode': 'On',
     'trigger_source': 'Line0',
     'trigger_delay': 5.0,
     'trigger_overlap': 'ReadOut',
+    'trigger_mode': 'Off',
     'chunk_mode_active': True,
-    'chunk_selector_frame_id': 'FrameID',
-    'chunk_enable_frame_id': True,
-    'chunk_selector_exposure_time': 'ExposureTime',
-    'chunk_enable_exposure_time': True,
-    'chunk_selector_gain': 'Gain',
-    'chunk_enable_gain': True,
     'chunk_selector_timestamp': 'Timestamp',
     'chunk_enable_timestamp': True,
+    'chunk_selector_gain': 'Gain',
+    'chunk_enable_gain': True,
+    'chunk_selector_exposure_time': 'ExposureTime',
+    'chunk_enable_exposure_time': True,
+    'chunk_selector_frame_id': 'FrameID',
+    'chunk_enable_frame_id': True,
 }
 
 
@@ -63,7 +64,7 @@ def make_camera_node(name, camera_type, serial, camera_info_url, frame_id):
         package='spinnaker_camera_driver',
         plugin='spinnaker_camera_driver::CameraDriver',
         name=name,
-        namespace='SM4',
+        namespace=LaunchConfig('namespace'),
         parameters=[camera_params, {'parameter_file': parameter_file, 'serial_number': serial, 'camerainfo_url': camera_info_url, 'frame_id': frame_id}],
         remappings=[
             ('~/control', '/exposure_control/control'),
@@ -77,7 +78,8 @@ def launch_setup(context, *args, **kwargs):
     """Create multiple camera."""
     container = ComposableNodeContainer(
         name='camera_container',
-        namespace='SM4',
+        namespace=LaunchConfig('namespace').perform(context),
+        # The container is a composable node that can hold multiple
         package='rclcpp_components',
         executable='component_container',
         composable_node_descriptions=[
@@ -90,14 +92,14 @@ def launch_setup(context, *args, **kwargs):
                 LaunchConfig('cam_0_type').perform(context),
                 LaunchConfig('cam_0_serial'),
                 LaunchConfig('cam_0_camera_info_url'),
-                frame_id='SM4/left_camera_link',
+                LaunchConfig('cam_0_frame_id').perform(context),
             ),
             make_camera_node(
                 LaunchConfig('cam_1_name'),
                 LaunchConfig('cam_1_type').perform(context),
                 LaunchConfig('cam_1_serial'),
                 LaunchConfig('cam_1_camera_info_url'),
-                frame_id='SM4/right_camera_link',
+                LaunchConfig('cam_1_frame_id').perform(context),
             ),
         ],
         output='screen',
@@ -146,6 +148,21 @@ def generate_launch_description():
                 'cam_1_serial',
                 default_value=f"'{serial_1}'",
                 description='FLIR serial number of camera 1 (in quotes!!)',
+            ),
+            LaunchArg(
+                'cam_0_frame_id',
+                default_value='SM4/left_camera_link',
+                description='Frame ID for camera 0',
+            ),
+            LaunchArg(
+                'cam_1_frame_id',
+                default_value='SM4/right_camera_link',
+                description='Frame ID for camera 1',
+            ),
+            LaunchArg(
+                'namespace',
+                default_value='SM4',
+                description='Namespace for the cameras',
             ),
             OpaqueFunction(function=launch_setup),
         ]
