@@ -1,0 +1,34 @@
+image_width: 2448
+image_height: 2048
+camera_name: right
+distortion_model: plumb_bob
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [1277.9, 0.0, 1230.3,
+         0.0, 1276.8, 1032.0,
+         0.0, 0.0, 1.0]
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [-0.20703, 0.088208, -0.00012687, -0.00037171, -0.016819]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [0.9999865799824755, -0.0037041207070129096, 0.0036220636024106604,
+         0.0037088073672596755, 0.9999922927945606, -0.0012880603209334766,
+        -0.003617264555515718, 0.001301476571314695, 0.9999926107506344]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [1277.9, 0.0, 1230.3, -255.733348,
+         0.0, 1276.8, 1032.0, 0.0,
+         0.0, 0.0, 1.0, 0.0]
+binning_x: 1
+binning_y: 1
+roi:
+  x_offset: 0
+  y_offset: 0
+  height: 2048
+  width: 2448
+  do_rectify: false

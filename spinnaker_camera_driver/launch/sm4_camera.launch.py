@@ -33,25 +33,28 @@ camera_params = {
     'gain_auto': 'Off',
     'gain': 0,
     'exposure_auto': 'Off',
-    'exposure_time': 16666.0,
+    'exposure_time': 10000.0,
+    'pixel_format': 'Mono8',
     'line2_selector': 'Line2',
     'line2_v33enable': False,
     'line3_selector': 'Line3',
     'line3_linemode': 'Input',
     'trigger_selector': 'FrameStart',
-    'trigger_source': 'Line0',
-    'trigger_delay': 5.0,
-    'trigger_overlap': 'ReadOut',
     'trigger_mode': 'Off',
+    'trigger_source': 'Line2',
+    'trigger_delay': 28.0,
+    'trigger_overlap': 'ReadOut',
     'chunk_mode_active': True,
-    'chunk_selector_timestamp': 'Timestamp',
-    'chunk_enable_timestamp': True,
-    'chunk_selector_gain': 'Gain',
-    'chunk_enable_gain': True,
-    'chunk_selector_exposure_time': 'ExposureTime',
-    'chunk_enable_exposure_time': True,
     'chunk_selector_frame_id': 'FrameID',
     'chunk_enable_frame_id': True,
+    'chunk_selector_exposure_time': 'ExposureTime',
+    'chunk_enable_exposure_time': True,
+    'chunk_selector_gain': 'Gain',
+    'chunk_enable_gain': True,
+    'chunk_selector_timestamp': 'Timestamp',
+    'chunk_enable_timestamp': True,
+    'binning_x': 1,
+    'binning_y': 1,
 }
 
 
@@ -109,8 +112,8 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
     """Create composable node by calling opaque function."""
-    serial_0 = '16378750'
-    serial_1 = '16378749'
+    serial_0 = '22348161'
+    serial_1 = '22348163'
     cam_0_camera_info_url = PathJoinSubstitution([FindPackageShare('spinnaker_camera_driver'), 'config',
                                                   serial_0+'.yaml'])
     cam_1_camera_info_url = PathJoinSubstitution([FindPackageShare('spinnaker_camera_driver'), 'config',
