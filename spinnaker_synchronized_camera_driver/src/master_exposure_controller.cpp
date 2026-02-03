@@ -22,16 +22,21 @@
 
 namespace spinnaker_synchronized_camera_driver
 {
-MasterExposureController::MasterExposureController(const std::string & name, rclcpp::Node * node)
-: name_(name), node_(node)
+MasterExposureController::MasterExposureController(
+  const std::string & name,
+  const std::shared_ptr<rclcpp::node_interfaces::NodeParametersInterface> & pi)
+
+: name_(name), node_parameters_interface_(pi)
 {
   exposureParameterName_ = declare_param<std::string>("exposure_parameter", "exposure_time");
   gainParameterName_ = declare_param<std::string>("gain_parameter", "gain");
   brightnessTarget_ = std::min(std::max(declare_param<int>("brightness_target", 120), 1), 255);
   currentBrightness_ = brightnessTarget_;
   brightnessTolerance_ = declare_param<int>("brightness_tolerance", 5);
-  maxExposureTime_ = std::max(declare_param<int>("max_exposure_time", 1000), 1);
-  minExposureTime_ = std::max(declare_param<int>("min_exposure_time", 10), 1);
+  minExposureTime_ =
+    std::max(static_cast<double>(declare_param<int>("min_exposure_time", 10)), 1.0);
+  maxExposureTime_ = std::max(
+    static_cast<double>(declare_param<int>("max_exposure_time", 1000)), minExposureTime_ + 1);
   maxGain_ = declare_param<double>("max_gain", 10);
   gainPriority_ = declare_param<bool>("gain_priority", false);
   maxFramesSkip_ = declare_param<int>("max_frames_skip", 10);  // number of frames to wait
@@ -231,9 +236,9 @@ void MasterExposureController::update(
                   << currentExposureTime_ << " " << currentGain_ << "]");
       numFramesSkip_ = maxFramesSkip_;  // restart frame skipping
       const auto expName = cam->getPrefix() + exposureParameterName_;
-      node_->set_parameter(rclcpp::Parameter(expName, currentExposureTime_));
+      set_param(rclcpp::Parameter(expName, currentExposureTime_));
       const auto gainName = cam->getPrefix() + gainParameterName_;
-      node_->set_parameter(rclcpp::Parameter(gainName, currentGain_));
+      set_param(rclcpp::Parameter(gainName, currentGain_));
     }
   }
 }
