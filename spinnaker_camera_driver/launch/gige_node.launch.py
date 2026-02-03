@@ -38,10 +38,10 @@ example_parameters = {
         # 'user_set_load': 'Yes',
         # These are useful for GigE cameras
         # 'device_link_throughput_limit': 380000000,
-        # 'gev_scps_packet_size': 9000,
+        'gev_scps_packet_size': 1500,
         # PTP for GigE cameras
-        # 'gev_ieee_1588': True,
-        # 'gev_ieee_1588_mode': 'SlaveOnly', # 'SlaveOnly',  #'Auto',
+        'gev_ieee_1588': True,
+        'gev_ieee_1588_mode': 'SlaveOnly',  # 'SlaveOnly',  #'Auto',
         # 'use_ieee_1588' : True,
         # ---- to reduce the sensor width and shift the crop
         # 'image_width': 1408,
@@ -69,7 +69,11 @@ example_parameters = {
         'chunk_enable_timestamp': True,
         'diagnostic_period': 1.0,
         'diagnostic_min_freq': 39.0,
-        'diagnostic_max_freq': 41.0
+        'diagnostic_max_freq': 41.0,
+        'diagnostic_incompletes_warn': 1,
+        'diagnostic_incompletes_error': 2,
+        'diagnostic_drops_warn': 1,
+        'diagnostic_drops_error': 2,
     },
     'blackfly': {
         'debug': False,
@@ -157,10 +161,13 @@ def launch_setup(context, *args, **kwargs):
     """Launch camera driver node."""
     parameter_file = LaunchConfig('parameter_file').perform(context)
     camera_type = LaunchConfig('camera_type').perform(context)
-    camera_info_url = LaunchConfig('camera_info_url').perform(context)
     if not parameter_file:
         parameter_file = PathJoinSubstitution(
-            [FindPackageShare('spinnaker_camera_driver'), 'config', camera_type + '.yaml']
+            [
+                FindPackageShare('spinnaker_camera_driver'),
+                'config',
+                camera_type + '.yaml',
+            ]
         )
     if camera_type not in example_parameters:
         raise Exception('no example parameters available for type ' + camera_type)
@@ -169,14 +176,13 @@ def launch_setup(context, *args, **kwargs):
         package='spinnaker_camera_driver',
         executable='camera_driver_node',
         output='screen',
-        # prefix=['xterm -e gdb --args'],
         name=[LaunchConfig('camera_name')],
+        # prefix=["xterm -e gdb -e xrun --args"],
         parameters=[
             example_parameters[camera_type],
             {
                 'ffmpeg_image_transport.encoding': 'hevc_nvenc',
                 'parameter_file': parameter_file,
-                'camerainfo_url': camera_info_url,
                 'serial_number': [LaunchConfig('serial')],
             },
         ],
@@ -190,17 +196,8 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
     """Create composable node by calling opaque function."""
-    serial = '19290922'
-    camera_info_url = PathJoinSubstitution([FindPackageShare('spinnaker_camera_driver'), 'config',
-                                            serial+'.yaml'])
     return LaunchDescription(
         [
-            LaunchArg(
-                'camera_info_url',
-                default_value=['file://', camera_info_url],
-                description='Full path to camera info file'
-            ),
-
             LaunchArg(
                 'camera_name',
                 default_value=['flir_camera'],
@@ -213,7 +210,7 @@ def generate_launch_description():
             ),
             LaunchArg(
                 'serial',
-                default_value=f"'{serial}'",
+                default_value="'20435008'",
                 description='FLIR serial number of camera (in quotes!!)',
             ),
             LaunchArg(
